@@ -2,10 +2,15 @@ import streamlit as st
 import yfinance as yf
 import time
 
-# הגדרות דף
-st.set_page_config(page_title="הגרלת מתנה לאלמוג", page_icon="🎁", layout="centered")
+# --- הגדרות דף ---
+# שינוי הכותרת כאן ישנה את הטקסט שמופיע בוואטסאפ
+st.set_page_config(
+    page_title="מתנה מאבא ואופק לאלמוג", 
+    page_icon="🎁", 
+    layout="centered"
+)
 
-# הזרקת CSS מקיפה למרכזיות מוחלטת ועיצוב
+# --- הזרקת CSS מקיפה למרכזיות מוחלטת ועיצוב ---
 st.markdown("""
     <style>
     /* מרכז את כל התוכן של האפליקציה */
@@ -46,17 +51,32 @@ st.markdown("""
         background-color: #ff3333;
     }
 
-    /* מרכוז כותרות של Streamlit */
-    h1, h2, h3, p, span {
+    /* מרכוז כותרות ורכיבי Streamlit רגילים */
+    h1, h2, h3, p, span, li, label {
         text-align: center !important;
         direction: RTL !important;
+        width: 100%;
+    }
+    
+    /* תיקון ספציפי למרכוז רשימות (המלבן הכחול) */
+    .stAlert ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        list-style-type: none; /* מסיר את הנקודות למראה נקי יותר */
+        padding: 0;
+    }
+    
+    .stAlert li {
+        margin: 5px 0;
     }
 
     /* עיצוב המטריקה (המחיר) */
     [data-testid="stMetricValue"] {
         display: flex;
         justify-content: center;
-        font-size: 40px !important;
+        font-size: 48px !important; /* הגדלת המחיר */
+        font-weight: bold;
     }
     [data-testid="stMetricLabel"] {
         display: flex;
@@ -66,14 +86,14 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# פונקציה להבאת מחיר מניה
+# פונקציה להבאת מחיר מניה (כדי שיוצג לפני הלחיצה)
 def get_stock_price(ticker):
     try:
         data = yf.Ticker(ticker)
         price = data.history(period="1d")['Close'].iloc[-1]
         return round(price, 2)
     except:
-        return 175.20  # מחיר לגיבוי
+        return 295.77  # מחיר לגיבוי מהתמונה
 
 # --- תצוגה לפני הלחיצה ---
 if 'clicked' not in st.session_state:
@@ -101,27 +121,30 @@ else:
     st.markdown('<div class="rtl-center">', unsafe_allow_html=True)
     st.markdown("""
         <div style="background-color: #1e3a2f; padding: 25px; border-radius: 15px; border: 2px solid #2ecc71; margin-bottom: 25px;">
-            <h1 style="color: #2ecc71; margin: 0;">זכית ב-2 מניות GOOGL!</h1>
+            <h1 style="color: #2ecc71; margin: 0;">זכית במניה 1 של GOOGL!</h1>
             <p style="font-size: 22px; color: white; margin-top: 10px;">חברת Alphabet Inc (Google)</p>
         </div>
     """, unsafe_allow_html=True)
 
     # מחיר חי
     current_price = get_stock_price("GOOGL")
-    st.metric(label="שווי מניה נוכחי (USD)", value=f"${current_price}")
+    st.metric(label="שווי המניה כרגע (USD)", value=f"${current_price}")
 
     st.markdown(f"## **באהבה גדולה, מאבא ומאופק**")
     st.write(f"""
     החלטנו שהשנה המתנה שלך תהיה נכס אמיתי שיצמח יחד איתך. 
-    אלו לא סתם מספרים, אלא בעלות באחת החברות המשפיעות בעולם.
+    זו לא סתם מתנה, זו בעלות באחת החברות המשפיעות בעולם.
     """)
     
     st.image("https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", width=150)
     
+    st.markdown('<br>', unsafe_allow_html=True)
+    
+    # סיכום הזכייה - עכשיו ממורכז
     st.info(f"""
     **סיכום הזכייה:**
-    * כמות: 2 מניות שלמות
-    * שווי כולל: ${round(current_price * 2, 2)}
+    * כמות: מניה 1 שלמה
+    * שווי כולל: ${current_price}
     * סטטוס: הועבר לחשבון אינטראקטיב ישראל שלך
     """)
     
